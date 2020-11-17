@@ -11,6 +11,7 @@ class Game {
 	Player player;
 	Floor floor;
 	Floor wall;
+	Floor wall2;
 public:
 	Game();
 	void Play();

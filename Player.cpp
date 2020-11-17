@@ -5,8 +5,9 @@ using namespace std;
 Player::Player(){
 	t.loadFromFile("player.png");
 	s.setTexture(t);
-	s.setPosition(175, 130);
+	s.setPosition(500, 130);
 	speed = Vector2f(0,0);
+	landed = false;
 }
 
 void Player::draw(sf::RenderTarget& w, sf::RenderStates states = RenderStates::Default) const{
@@ -14,49 +15,79 @@ void Player::draw(sf::RenderTarget& w, sf::RenderStates states = RenderStates::D
 }
 
 void Player::Update(){
-	if(!landed){
-		speed = Vector2f(speed.x, speed.y + 9.8f/60);
-	}
-	if(Keyboard::isKeyPressed(sf::Keyboard::Right)){
-		speed.x = 2;
-	}
-	else if(Keyboard::isKeyPressed(sf::Keyboard::Left)){
-		speed.x = -2;
-	}
-	else{
-		speed.x = 0;
-	}
+	speed.y += 9.8f/60.f;
+	
+	Move();
 }
 
 void Player::Move(){
+	prevPos = s.getPosition();
 	s.move(speed);
+}
+
+void Player::MoveLeft(){
+	speed.x = -2;
+}
+
+void Player::MoveRight(){
+	speed.x = 2;
+}
+
+void Player::Jump(){
+	if(landed){
+		prevPos = s.getPosition();
+		speed.y = -32;
+	}
 }
 
 void Player::Collision(Floor floor){
 	FloatRect boxPlayer = s.getGlobalBounds();
 	FloatRect boxFloor = floor.GetRect();
-	if(boxPlayer.intersects(boxFloor)){
-		// x
-		//Si esta "adentro" no evalua
-		if(!((boxPlayer.left + boxPlayer.width - boxFloor.left < 0) && (boxPlayer.left - boxFloor.left + boxFloor.width < 0))){
-			if(fabs(boxPlayer.left + boxPlayer.width - boxFloor.left)
-			   < fabs(boxPlayer.left - boxFloor.left + boxFloor.width)){
-				if(boxPlayer.left + boxPlayer.width >= boxFloor.left){
-					speed.x = 0;
-				}
-			} else {
-				if(boxPlayer.left <= boxFloor.left + boxFloor.width){
-					speed.x = 0;
-				}
-			}
-		}
-		
-		// y
-		if(boxPlayer.top + boxPlayer.height >= boxFloor.top){
-				speed.y = 0;
-				landed = true;
-		}else{
-			landed = false;
-		}
+	
+	float PB = boxPlayer.top + boxPlayer.height;
+	float PT = boxPlayer.top;
+	float PR = boxPlayer.left + boxPlayer.width;
+	float PL = boxPlayer.left;
+	float FB = boxFloor.top + boxFloor.height;
+	float FT = boxFloor.top;
+	float FR = boxFloor.left + boxFloor.width;
+	float FL = boxFloor.left;
+	
+	// Izquierda
+	if(	PL + speed.x < FR &&
+		PR + speed.x > FL &&
+		PT <= FB &&
+		PB >= FT
+	  ){
+		speed.x = 0;
 	}
+	// Derecha
+	if(	PR + speed.x > FL &&
+		PL + speed.x < FR &&
+		PT <= FB &&
+		PB >= FT
+	  ){
+		speed.x = 0;
+	}
+	// Abajo
+	if( PB + speed.y > FT &&
+		PT + speed.y < FB &&
+		PL <= FR &&
+		PR >= FL
+	  ){
+		s.setPosition(Vector2f(s.getPosition().x, prevPos.y));
+		prevPos = s.getPosition();
+		landed = true;
+		speed.y = 0;
+		speed.x *= 0.9f;
+	}
+	// Arriba
+	if( PB + speed.y > FT &&
+		PT + speed.y < FB &&
+		PL <= FR &&
+		PR >= FL
+	  ){
+		// Implementar golpear un techo
+	}
+	
 }
