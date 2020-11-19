@@ -2,16 +2,18 @@
 
 #include <SFML/Graphics.hpp>
 #include "Player.h"
+#include "Scenario.h"
+#include "Wall.h"
 #include "Floor.h"
 
 using namespace sf;
 
 class Game {
 	RenderWindow w;
+	Clock clock;
+	
 	Player player;
-	Floor floor;
-	Floor wall;
-	Floor wall2;
+	vector<Scenario*> scenario;
 public:
 	Game();
 	void Play();

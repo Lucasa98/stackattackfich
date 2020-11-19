@@ -1,9 +1,9 @@
 #include "Floor.h"
 
-Floor::Floor(){
+Floor::Floor(float x, float y){
 	t.loadFromFile("floor.png");
 	s.setTexture(t);
-	s.setPosition(0, 430);
+	s.setPosition(x, y);
 }
 
 void Floor::draw(sf::RenderTarget& w, sf::RenderStates states = RenderStates::Default) const{

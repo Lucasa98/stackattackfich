@@ -7,7 +7,10 @@ Player::Player(){
 	s.setTexture(t);
 	s.setPosition(500, 130);
 	speed = Vector2f(0,0);
+	
 	landed = false;
+	leftFlag = false;
+	rightFlag = false;
 }
 
 void Player::draw(sf::RenderTarget& w, sf::RenderStates states = RenderStates::Default) const{
@@ -16,6 +19,23 @@ void Player::draw(sf::RenderTarget& w, sf::RenderStates states = RenderStates::D
 
 void Player::Update(){
 	speed.y += 9.8f/60.f;
+	if(landed)
+		speed.x *= 0.9f;
+	else
+		speed.x *= 0.95f;
+	
+	if(leftFlag && !rightFlag){
+		speed.x = -2;
+	}
+	else if(rightFlag && !leftFlag){
+		speed.x = 2;
+	}
+	else
+		speed.x = 0;
+	
+	for(size_t i = 0; i < scenario.size(); ++i){
+		ProcessCollision(scenario[i]);
+	}
 	
 	Move();
 }
@@ -26,23 +46,37 @@ void Player::Move(){
 }
 
 void Player::MoveLeft(){
-	speed.x = -2;
+	leftFlag = true;
+}
+
+void Player::nMoveLeft(){
+	leftFlag = false;
 }
 
 void Player::MoveRight(){
-	speed.x = 2;
+	rightFlag = true;
+}
+
+void Player::nMoveRight(){
+	rightFlag = false;
 }
 
 void Player::Jump(){
 	if(landed){
 		prevPos = s.getPosition();
-		speed.y = -32;
+		speed.y = -5;
+		landed = false;
 	}
 }
 
-void Player::Collision(Floor floor){
+void Player::Collisions(vector<Scenario*>& scenarioAux){
+	scenario = scenarioAux;
+}
+
+void Player::ProcessCollision(Scenario* object){
+	
 	FloatRect boxPlayer = s.getGlobalBounds();
-	FloatRect boxFloor = floor.GetRect();
+	FloatRect boxFloor = object->GetRect();
 	
 	float PB = boxPlayer.top + boxPlayer.height;
 	float PT = boxPlayer.top;
@@ -89,5 +123,4 @@ void Player::Collision(Floor floor){
 	  ){
 		// Implementar golpear un techo
 	}
-	
 }

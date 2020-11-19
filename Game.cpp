@@ -1,17 +1,20 @@
 #include "Game.h"
 
-Game::Game(): w(VideoMode(640, 480), "Stack Attack"){
-	w.setFramerateLimit(60);
+Game::Game(): w(VideoMode(640, 480), "Stack Attack"), scenario(3){
 	
-	wall.SetPos(Vector2f(500, 380));
-	wall2.SetPos(Vector2f(-400, 380));
+	scenario[0] = new Floor(0, 430);
+	scenario[1] = new Wall(500, 380);
+	scenario[2] = new Wall(-400, 380);
 }
 
 void Game::Play(){
 	while(w.isOpen()) {
 		ProcessEvents();
-		Update();
-		Draw();
+		if(clock.getElapsedTime().asMilliseconds() >= 1000/60.f){
+			Update();
+			Draw();
+			clock.restart();
+		}
 	}
 }
 
@@ -21,6 +24,8 @@ void Game::ProcessEvents(){
 		if(e.type == Event::Closed)
 			w.close();
 		if(e.type == Event::KeyPressed){
+			if(e.key.code == Keyboard::Escape)
+				w.close();
 			if(e.key.code == Keyboard::Left)
 				player.MoveLeft();
 			if(e.key.code == Keyboard::Right)
@@ -29,22 +34,26 @@ void Game::ProcessEvents(){
 		if(e.type == Event::KeyReleased){
 			if(e.key.code == Keyboard::Up)
 				player.Jump();
+			if(e.key.code == Keyboard::Left)
+				player.nMoveLeft();
+			if(e.key.code == Keyboard::Right)
+				player.nMoveRight();
 		}
 	}
 }
 
 void Game::Update(){
-	player.Collision(floor);
-	player.Collision(wall);
-	player.Collision(wall2);
+	player.Collisions(scenario);
 	player.Update();
 }
 
 void Game::Draw(){
 	w.clear();
 	w.draw(player);
-	w.draw(floor);
-	w.draw(wall);
-	w.draw(wall2);
+	
+	for(size_t i = 0; i < scenario.size(); ++i){
+		w.draw(*(scenario[i]));
+	}
+	
 	w.display();
 }
