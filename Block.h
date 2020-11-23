@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "Scenario.h"
@@ -14,17 +15,20 @@ private:
 	
 	Vector2f speed;
 	
-	vector<vector<bool>> gameState;
+	vector<vector<bool>>* gameState;
+	int prevx;
+	int prevy;
 	bool landed;
 public:
 	Block(float x, float y);
+	Block(const Block&);
 	virtual void draw(RenderTarget&, RenderStates) const;
 	
-	void Collision(vector<vector<bool>>&);
+	void Collisions(vector<vector<bool>>*);
 	void ProcessCollisions();
 	void Update();
 	void Move();
 	void Empujar();
 	
-	FloatRect GetRect() override;
+	FloatRect GetRect() const override;
 };

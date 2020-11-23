@@ -14,6 +14,6 @@ void Wall::SetPos(Vector2f pos){
 	s.setPosition(pos);
 }
 
-FloatRect Wall::GetRect(){
+FloatRect Wall::GetRect() const{
 	return s.getGlobalBounds();
 }

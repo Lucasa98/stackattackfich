@@ -17,7 +17,7 @@ class Game {
 	vector<VertexArray> cuadriculax;
 	vector<VertexArray> cuadriculay;
 	
-//	vector<Block> Game_Zone;
+	vector<Block> Game_Zone;
 	vector<vector<bool>> Pos_Matrix;
 	Player player;
 	vector<Scenario*> scenario;
@@ -27,4 +27,5 @@ public:
 	void ProcessEvents();
 	void Update();
 	void Draw();
+	~Game();
 };

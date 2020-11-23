@@ -14,6 +14,6 @@ void Floor::SetPos(Vector2f pos){
 	s.setPosition(pos);
 }
 
-FloatRect Floor::GetRect(){
+FloatRect Floor::GetRect() const{
 	return s.getGlobalBounds();
 }

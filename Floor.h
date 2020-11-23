@@ -14,5 +14,5 @@ public:
 	
 	void SetPos(Vector2f);
 	
-	FloatRect GetRect() override;
+	FloatRect GetRect() const override;
 };

@@ -27,8 +27,13 @@ Game::Game(): w(VideoMode(500, 400), "Stack Attack"),
 	
 	for(size_t i=0; i < Pos_Matrix.size(); i++) {
 		Pos_Matrix[i].resize(5);
+		for(size_t j = 0; j < Pos_Matrix.size(); ++j){
+			Pos_Matrix[i][j] = false;
+		}
 	}
-//	Game_Zone.push_back(Block(200, 100));
+	
+	Block b(200,50);
+	Game_Zone.push_back(b);
 }
 
 void Game::Play(){
@@ -58,6 +63,10 @@ void Game::ProcessEvents(){
 				player.MoveRight();
 			if(e.key.code == Keyboard::Down)
 				player.Empujar();
+			if(e.key.code == Keyboard::Space){
+				Block b(200, 50);
+				Game_Zone.push_back(b);
+			}
 		}
 		if(e.type == Event::KeyReleased){
 			if(e.key.code == Keyboard::Up)
@@ -75,12 +84,12 @@ void Game::ProcessEvents(){
 void Game::Update(){
 	player.Collisions(scenario);
 	player.Update();
-//	for(size_t i = 0; i < Game_Zone.size(); ++i){
-//		Game_Zone[i].Collisions(Pos_Matrix);
-//	}
-//	for(size_t i = 0; i < Game_Zone.size(); ++i){
-//		Game_Zone[i].Update();
-//	}
+	for(size_t i = 0; i < Game_Zone.size(); ++i){
+		Game_Zone[i].Collisions(&Pos_Matrix);
+	}
+	for(size_t i = 0; i < Game_Zone.size(); ++i){
+		Game_Zone[i].Update();
+	}
 }
 
 void Game::Draw(){
@@ -88,9 +97,9 @@ void Game::Draw(){
 	
 	w.draw(player);
 	
-//	for(size_t i = 0; i < Game_Zone.size(); ++i){
-//		w.draw(Game_zone[i]);
-//	}
+	for(size_t i = 0; i < Game_Zone.size(); ++i){
+		w.draw(Game_Zone[i]);
+	}
 	
 	for(size_t i = 0; i < scenario.size(); ++i){
 		w.draw(*(scenario[i]));
@@ -102,4 +111,10 @@ void Game::Draw(){
 		w.draw(cuadriculay[i]);
 	
 	w.display();
+}
+
+Game::~Game(){
+	for(size_t i = 0; i < scenario.size(); ++i){
+		delete scenario[i];
+	}
 }
