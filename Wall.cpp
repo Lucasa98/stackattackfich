@@ -1,7 +1,7 @@
 #include "Wall.h"
 
 Wall::Wall(float x, float y){
-	t.loadFromFile("floor.png");
+	t.loadFromFile("wall.png");
 	s.setTexture(t);
 	s.setPosition(x, y);
 }

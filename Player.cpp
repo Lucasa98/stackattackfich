@@ -5,7 +5,7 @@ using namespace std;
 Player::Player(){
 	t.loadFromFile("player.png");
 	s.setTexture(t);
-	s.setPosition(500, 130);
+	s.setPosition(250, 0);
 	speed = Vector2f(0,0);
 	
 	landed = false;
@@ -18,6 +18,7 @@ void Player::draw(sf::RenderTarget& w, sf::RenderStates states = RenderStates::D
 }
 
 void Player::Update(){
+	//Movimiento
 	speed.y += 9.8f/60.f;
 	if(landed)
 		speed.x *= 0.9f;
@@ -33,6 +34,7 @@ void Player::Update(){
 	else
 		speed.x = 0;
 	
+	//Colisiones (cancelan movimientos)
 	for(size_t i = 0; i < scenario.size(); ++i){
 		ProcessCollision(scenario[i]);
 	}
@@ -67,6 +69,13 @@ void Player::Jump(){
 		speed.y = -5;
 		landed = false;
 	}
+}
+void Player::Empujar(){
+	empujando = true;
+}
+
+void Player::nEmpujar(){
+	empujando = false;
 }
 
 void Player::Collisions(vector<Scenario*>& scenarioAux){
@@ -109,7 +118,7 @@ void Player::ProcessCollision(Scenario* object){
 		PL <= FR &&
 		PR >= FL
 	  ){
-		s.setPosition(Vector2f(s.getPosition().x, prevPos.y));
+		/*s.setPosition(Vector2f(s.getPosition().x, prevPos.y));*/ /// esto lo comente para el que personaje no rebote al caer y por ahora no da problemas;
 		prevPos = s.getPosition();
 		landed = true;
 		speed.y = 0;
@@ -123,4 +132,8 @@ void Player::ProcessCollision(Scenario* object){
 	  ){
 		// Implementar golpear un techo
 	}
+}
+
+FloatRect Player::GetRect(){
+	return s.getGlobalBounds();
 }

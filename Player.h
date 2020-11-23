@@ -22,6 +22,7 @@ class Player : public Drawable{
 	bool rightFlag;
 	bool leftWall;
 	bool rightWall;
+	bool empujando;
 public:
 	Player();
 	virtual void draw(RenderTarget&, RenderStates) const;
@@ -35,6 +36,11 @@ public:
 	void MoveRight();
 	void nMoveRight();
 	void Jump();
+	void Empujar();
+	void nEmpujar();
 	
+	//Carga el escenario
 	void Collisions(vector<Scenario*>&);
+	
+	FloatRect GetRect();
 };
