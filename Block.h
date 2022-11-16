@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "Scenario.h"
 
@@ -15,11 +16,17 @@ private:
 	
 	Vector2f speed;
 	
-	vector<vector<bool>>* gameState;
+	vector<vector<bool>>* gameState;	//Posiciones ocupadas
 	int prevx;
 	int prevy;
-	bool landed;
+	int movementc;	//Acumulador al ser empujado, [0, 20] suma 1 en cada frame (2.5*20=50)
+	bool moving;	//T si fue empujado, F si no
+	bool landed;	//T con contacto debajo, False caso contrario
 public:
+	enum direction{
+		left, right
+	};
+	
 	Block(float x, float y);
 	Block(const Block&);
 	virtual void draw(RenderTarget&, RenderStates) const;
@@ -28,7 +35,11 @@ public:
 	void ProcessCollisions();
 	void Update();
 	void Move();
-	void Empujar();
+	void erase();
+	void Empujar(direction);
 	
+	pair<int, int> GetXY();
 	FloatRect GetRect() const override;
+	
+	~Block();
 };

@@ -1,31 +1,40 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Player.h"
-#include "Scenario.h"
-#include "Wall.h"
-#include "Floor.h"
-#include "Block.h"
+#include "Scene.h"
+#include "Menu.h"
+#include "Top.h"
+#include "Match.h"
+#include "Scores.h"
+#include "Gameover.h"
 
 using namespace sf;
 
-class Game {
+class Game {	
 	RenderWindow w;
 	Clock clock;
 	
-	///Cuadricula
-	vector<VertexArray> cuadriculax;
-	vector<VertexArray> cuadriculay;
+	Scene* m_scene;
+	Scene* m_next_scene;
 	
-	vector<Block> Game_Zone;
-	vector<vector<bool>> Pos_Matrix;
-	Player player;
-	vector<Scenario*> scenario;
+	
+	Scores HighScores;
 public:
+	enum Escena{ s_menu, s_match, s_gameover, s_top };
+	
 	Game();
+	
 	void Play();
-	void ProcessEvents();
+	
+	void ChangeScene(Escena);
+	void Restart(int);
+	void Death(int);
+	void NewScore(Score);
+	vector<Score> view_scores();
+	
 	void Update();
+	void ProcessEvents();
 	void Draw();
+	
 	~Game();
 };
